@@ -52,7 +52,7 @@ Base frugale pour l'API Reso•°, un inconscient artificiel collectif au servic
    ```bash
    npm start
    ```
-4. Tester l'accueil : `GET http://localhost:3000/` → aperçu JSON des endpoints.
+4. Tester l'accueil : `GET http://localhost:3000/` → page HTML listant les endpoints principaux.
 5. Vérifier la santé : `GET http://localhost:3000/health` → `{ "status": "ok" }`.
 
 ## Variables d'environnement
