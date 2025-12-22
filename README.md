@@ -52,7 +52,8 @@ Base frugale pour l'API Reso•°, un inconscient artificiel collectif au servic
    ```bash
    npm start
    ```
-4. Tester la santé : `GET http://localhost:3000/health` → `{ "status": "ok" }`.
+4. Tester l'accueil : `GET http://localhost:3000/` → aperçu JSON des endpoints.
+5. Vérifier la santé : `GET http://localhost:3000/health` → `{ "status": "ok" }`.
 
 ## Variables d'environnement
 - `SUPABASE_URL` : URL du projet Supabase.
@@ -72,6 +73,7 @@ Base frugale pour l'API Reso•°, un inconscient artificiel collectif au servic
 4. La configuration `vercel.json` route toutes les requêtes vers `src/index.js` et exporte l'app Express.
 
 ## Endpoints
+- `GET /` : message d'accueil avec la liste des endpoints disponibles.
 - `GET /health` : statut rapide du service.
 - `GET /public/hublot` : flux agrégé simulé (mock) basé sur l'état actuel.
 - `POST /echo` (header `X-API-KEY: RESO_PUBLIC_KEY`) : enregistre un ensemble de `tags` et met à jour le graphe de cooccurrence.
