@@ -3,6 +3,11 @@ import { applyDecay } from './decay.js';
 const resonanceGraph = new Map();
 let lastUpdated = Date.now();
 
+const resetGraph = () => {
+  resonanceGraph.clear();
+  lastUpdated = Date.now();
+};
+
 const ensureNode = (tag) => {
   if (!resonanceGraph.has(tag)) {
     resonanceGraph.set(tag, { weight: 0, links: new Map() });
@@ -71,4 +76,9 @@ export const getResonanceState = (context = {}) => {
     edges,
     context,
   };
+};
+
+export const resetResonance = (context = {}) => {
+  resetGraph();
+  return getResonanceState({ ...context, resetAt: new Date(lastUpdated).toISOString() });
 };
