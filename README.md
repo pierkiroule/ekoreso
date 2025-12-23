@@ -76,16 +76,18 @@ Base frugale pour l'API Reso•°, un inconscient artificiel collectif au servic
 - `GET /` : message d'accueil avec la liste des endpoints disponibles.
 - `GET /health` : statut rapide du service.
 - `GET /public/hublot` : flux agrégé simulé (mock) basé sur l'état actuel.
-- `POST /echo` (header `X-API-KEY: RESO_PUBLIC_KEY`) : enregistre un ensemble de `tags` et met à jour le graphe de cooccurrence.
+- `POST /echo` (header `X-API-KEY: RESO_PUBLIC_KEY`) : enregistre un ensemble de `tags` et met à jour le graphe de cooccurrence ; accepte un bloc `media` optionnel (`skyboxUrl`, `audioUrl`, `prompt`).
 - `GET /echobulle` : génère une échobulle à partir du graphe en mémoire.
 - `GET /admin/dashboard` (header `X-API-KEY: RESO_ADMIN_KEY`) : vue JSON type "dashboard" sur l'état actuel.
-- `POST /admin/content` (header `X-API-KEY: RESO_ADMIN_KEY`) : injection interne de contenu symbolique (`tags`, `media_url`).
+- `POST /admin/content` (header `X-API-KEY: RESO_ADMIN_KEY`) : injection interne de contenu symbolique (`tags`, `media_url`, `media`).
 - `POST /admin/reset` (header `X-API-KEY: RESO_ADMIN_KEY`) : purge le graphe en mémoire (repart à zéro).
 
 ## Services internes
 - **resonanceEngine** : graphe en mémoire (pondération + cooccurrences) avec décroissance temporelle simple.
 - **decay** : utilitaire de décroissance (demi-vie d'1h par défaut).
 - **echobulleGenerator** : transforme l'état du graphe (top signaux, edges, densité) en objet échobulle.
+- **Transmedia context** : chaque `echo` peut inclure des URLs de skybox 3D ou d'audio ; elles sont historisées (récents items)
+  et restituées dans les échobulles (`transmedia`), prêtes à être poussées vers échobulle / ekosite.
 
 ## Supabase
 - Le client est instancié dans `src/db/supabase.js`. Si `SUPABASE_URL` ou `SUPABASE_SERVICE_ROLE_KEY` sont absents, le client reste `null` et un warning est logué.

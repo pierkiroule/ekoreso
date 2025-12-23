@@ -1,10 +1,14 @@
 import { applyDecay } from './decay.js';
 
 const resonanceGraph = new Map();
+const recentTransmedia = [];
 let lastUpdated = Date.now();
+
+const MAX_RECENT_MEDIA = 6;
 
 const resetGraph = () => {
   resonanceGraph.clear();
+  recentTransmedia.length = 0;
   lastUpdated = Date.now();
 };
 
@@ -13,6 +17,34 @@ const ensureNode = (tag) => {
     resonanceGraph.set(tag, { weight: 0, links: new Map() });
   }
   return resonanceGraph.get(tag);
+};
+
+const normalizeTransmedia = (payload = {}, tags = []) => {
+  const media = payload.media || {};
+  const skyboxUrl = payload.skyboxUrl || media.skyboxUrl || payload.media_url || media.mediaUrl;
+  const audioUrl = payload.audioUrl || media.audioUrl;
+
+  if (!skyboxUrl && !audioUrl) return null;
+
+  return {
+    tags,
+    skyboxUrl: skyboxUrl || null,
+    audioUrl: audioUrl || null,
+    prompt: media.prompt || payload.prompt || null,
+    narrative: media.narrative || payload.narrative || payload.description || null,
+    capturedAt: new Date().toISOString(),
+  };
+};
+
+const registerTransmedia = (payload, tags) => {
+  const mediaEntry = normalizeTransmedia(payload, tags);
+  if (!mediaEntry) return null;
+
+  recentTransmedia.unshift(mediaEntry);
+  if (recentTransmedia.length > MAX_RECENT_MEDIA) {
+    recentTransmedia.length = MAX_RECENT_MEDIA;
+  }
+  return mediaEntry;
 };
 
 const decayGraph = () => {
@@ -47,7 +79,13 @@ export const recordResonance = (tags = [], payload = {}) => {
     }
   }
 
-  return getResonanceState({ lastPayload: payload, lastEchoAt: timestamp });
+  const mediaEntry = registerTransmedia(payload, tags);
+
+  return getResonanceState({
+    lastPayload: payload,
+    lastEchoAt: timestamp,
+    lastTransmedia: mediaEntry,
+  });
 };
 
 export const getResonanceState = (context = {}) => {
@@ -74,7 +112,7 @@ export const getResonanceState = (context = {}) => {
     updatedAt: new Date(lastUpdated).toISOString(),
     nodes,
     edges,
-    context,
+    context: { ...context, transmedia: [...recentTransmedia] },
   };
 };
 
