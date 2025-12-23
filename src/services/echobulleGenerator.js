@@ -4,6 +4,7 @@ export const generateEchobulle = (state) => {
   const nodes = [...(state?.nodes || [])].sort((a, b) => b.weight - a.weight);
   const focus = nodes.slice(0, 3).map((node) => node.tag);
   const echoDensity = nodes.reduce((acc, node) => acc + node.weight, 0);
+  const transmedia = (state?.context?.transmedia || []).slice(0, 3);
 
   const signals = nodes.slice(0, 10).map((node) => ({
     tag: node.tag,
@@ -24,6 +25,7 @@ export const generateEchobulle = (state) => {
     echoDensity: Number(normalize(echoDensity)),
     signals,
     edges,
+    transmedia,
     context: state?.context ?? {},
   };
 };

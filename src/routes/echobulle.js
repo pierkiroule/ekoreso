@@ -6,7 +6,7 @@ import { recordResonance, getResonanceState } from '../services/resonanceEngine.
 const router = Router();
 
 router.post('/echo', requirePublicKey, (req, res) => {
-  const { tags = [], payload = {} } = req.body || {};
+  const { tags = [], payload = {}, media } = req.body || {};
   if (!Array.isArray(tags) || tags.length === 0) {
     return res
       .status(400)
@@ -14,7 +14,8 @@ router.post('/echo', requirePublicKey, (req, res) => {
   }
 
   const normalizedTags = tags.map((tag) => String(tag).toLowerCase()).slice(0, 12);
-  const state = recordResonance(normalizedTags, payload);
+  const mergedPayload = media ? { ...payload, media } : payload;
+  const state = recordResonance(normalizedTags, mergedPayload);
 
   return res.json({ status: 'echo-accepted', tags: normalizedTags, state });
 });

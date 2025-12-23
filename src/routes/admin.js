@@ -24,13 +24,13 @@ router.get('/dashboard', requireAdminKey, (_req, res) => {
 });
 
 router.post('/content', requireAdminKey, (req, res) => {
-  const { tags = [], media_url: mediaUrl } = req.body || {};
+  const { tags = [], media_url: mediaUrl, media = {} } = req.body || {};
   if (!Array.isArray(tags) || tags.length === 0) {
     return res.status(400).json({ error: 'Les tags sont requis pour injecter un contenu.' });
   }
 
   const normalizedTags = tags.map((tag) => String(tag).toLowerCase()).slice(0, 12);
-  const state = recordResonance(normalizedTags, { mediaUrl, from: 'admin' });
+  const state = recordResonance(normalizedTags, { mediaUrl, media, from: 'admin' });
 
   return res.json({ status: 'content-registered', tags: normalizedTags, mediaUrl, state });
 });
